@@ -1,0 +1,21 @@
+{
+    "name": "vue-mapx",
+    "version": "0.1.0",
+    "description": "Wrapper for Mapbox GL/Maplilbre",
+    "author": "Elmatou",
+    "main": "dist/main.js",
+    "module": "src/index.js",
+    "license": "MIT",
+    "private": false,
+    "repository": "git@github.com:treville-sasu/vue-mapx.git",
+    "scripts": {
+        "build": "yarn run webpack",
+        "lint": "yarn run eslint --fix",
+        "publish": "yarn publish"
+    },
+    "devDependencies": {
+        "eslint": "^7.14.0",
+        "webpack": "^5.8.0",
+        "webpack-cli": "^4.2.0"
+    }
+}
