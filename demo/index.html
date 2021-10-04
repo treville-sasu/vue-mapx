@@ -1,0 +1,76 @@
+<html>
+
+<head>
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css' rel='stylesheet' />
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src="./dist/main.js"></script>
+
+  <title>Vue-MapX Demo page</title>
+  <link rel="shortcut icon" href="#">
+</head>
+
+<body>
+  <div id="app"></div>
+</body>
+
+<script type="text/javascript">
+  Vue.use(VueMapX.default, mapboxgl, 'no-token');
+
+  const app = new Vue({
+    el: '#app',
+    template: `<section class="mpx-map-wrapper">
+        <MxMap v-bind="map" @load="displayEvent" @dragend="displayEvent" @mousemove="pointerPosition = $event.lngLat">
+          <template #loader>{{ message }}</template>
+          <mx-marker v-bind="marker" @dragend="displayEvent">
+            <mx-popup v-bind="popup">{{ message }}</mx-popup>
+            </mx-marker>
+          <mx-scale-control v-bind="scale" />
+          <mx-popup v-bind="tooltip">{{  pointerPosition }}</mx-popup>
+          <mx-popup v-bind="popup">{{ message }}</mx-popup>
+          </MxMap>
+          </section>`,
+    data() {
+      return {
+        message: 'Hello VueMapX!',
+        pointerPosition: undefined,
+        map: {
+          testMode: true,
+          touchPitch: true,
+          // using `mapStyle` for `style` because it is a reserved word
+          mapStyle: 'mapbox://styles/mapbox/streets-v11',
+          center: [44.3763, 33.2788],
+          zoom: 11
+        },
+        marker: {
+          draggable: true,
+          color: 'red',
+          lngLat: {
+            lat: 33.32442445164719,
+            lng: 44.26575004569881
+          }
+        },
+        scale: {
+          unit: 'nautical',
+          position: 'top-right'
+        },
+        popup: {
+          offset: 15,
+          lngLat: {
+            lat: 33.22195126761062,
+            lng: 44.31930842285104
+          }
+        },
+        tooltip: {
+          closeButton: false,
+          trackPointer: true
+        }
+      }
+    },
+    methods: {
+      displayEvent(e) { console.debug(e) }
+    }
+  })
+</script>
+
+</html>
