@@ -1,0 +1,30 @@
+<script>
+// https://docs.mapbox.com/mapbox-gl-js/api/markers/#attributioncontrol
+import baseMixin from '../mixins/mx';
+import controlMixin from '../mixins/control';
+
+export default {
+  name: 'AttributionControl',
+  mixins: [baseMixin, controlMixin],
+  props: {
+    compact: {
+      type: Boolean,
+      default: undefined,
+    },
+    customAttribution: [String, Array],
+  },
+  computed: {
+    curatedOptions() {
+      const { position, ...opts } = this.$props;
+      this.removeUndefined(opts);
+      return opts;
+    },
+  },
+  created() {
+    this.mxObject = new this.$mapx.AttributionControl(this.curatedOptions);
+  },
+  render() {
+    return undefined;
+  },
+};
+</script>

@@ -6,7 +6,7 @@ A really lite Vue plugin to get a Mapbox GL / Maplibre in your App.
 
 ## Why another library ?
  As always, support is the main reason you'll choose a library. 
-
+ 
  Now we have lighter version with the same awesome Vue integration (and more).
 
 ## Preview & Demo
@@ -90,6 +90,32 @@ Do not forget to wrap your map in a container with
 Popups could be attached to a marker or displayed freely on the map by giving coordinates.
 with `trackPointer:true` the popup will follow the pointer device
 
+#### Attribution Control `mx-attribution-control`
+`position` is one of the four corner eg: 'top-left', ...
+See the mapbox/maplibre doc for more details
+
+#### Scale Control `mx-scale-control`
+`position` is one of the four corner eg: 'top-left', ...
+See the mapbox/maplibre doc for more details
+
+#### Fullscreen Control `mx-fullscreen-control`
+`position` is one of the four corner eg: 'top-left', ...
+See the mapbox/maplibre doc for more details
+
+#### Geolocate Control `mx-geolocate-control`
+`position` is one of the four corner eg: 'top-left', ...
+See the mapbox/maplibre doc for more details
+You can lister for events too
+
+#### Navigation Control `mx-navigation-control`
+`position` is one of the four corner eg: 'top-left', ...
+See the mapbox/maplibre doc for more details
+
+#### any other Control `mx-i-control`
+Use the slot to populate the control
+
 ### Coordinates notations
 
 If you come from other web map librairies you know that there no convention for coordinates notations. Mapbox use the `lngLat` parameter so do we. this could be an `Array<Number, Number>` or an `Object<{lat, lng}>`
+
+## Differences with `v-mapbox` or `vue-mapbox` or `vue-mapbox-gl`

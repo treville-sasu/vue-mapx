@@ -15,28 +15,43 @@
 </body>
 
 <script type="text/javascript">
-  Vue.use(VueMapX.default, mapboxgl, 'no-token');
+  Vue.use(VueMapX.default, mapboxgl, 'pk.eyJ1IjoibWFicmVuYWMiLCJhIjoiY2sxbm1ueWhjMDd6aTNvcWZhNWVzejEyZiJ9.y6D5gNxGbMDJnzd0CSW9xQ');
 
   const app = new Vue({
     el: '#app',
     template: `<section class="mpx-map-wrapper">
-        <MxMap v-bind="map" @load="displayEvent" @dragend="displayEvent" @mousemove="pointerPosition = $event.lngLat">
-          <template #loader>{{ message }}</template>
-          <mx-marker v-bind="marker" @dragend="displayEvent">
-            <mx-popup v-bind="popup">{{ message }}</mx-popup>
-            </mx-marker>
-          <mx-scale-control v-bind="scale" />
-          <mx-popup v-bind="tooltip">{{  pointerPosition }}</mx-popup>
-          <mx-popup v-bind="popup">{{ message }}</mx-popup>
-          </MxMap>
-          </section>`,
+      <MxMap v-bind="map" 
+      @load="debug" 
+      @dragend="debug" 
+      @mousemove="pointerPosition = $event.lngLat"
+      >
+      <mx-attribution-control :customAttribution="message"/>
+      <mx-popup v-bind="tooltip">{{  pointerPosition }}</mx-popup>
+      <mx-marker v-bind="marker" @dragend="debug">
+        <mx-popup v-bind="popup">{{ message }}</mx-popup>
+        </mx-marker>
+      <mx-popup v-bind="popup">{{ message }}</mx-popup>
+      <template #loader>{{ message }}</template>
+       <MxEnvironment v-bind="environment"/>
+       <MxLayer v-bind="sky"/>
+       <MxLayer v-bind="walk"/>
+        <mx-scale-control v-bind="scale" />
+        <mx-fullscreen-control/>
+        <mx-geolocate-control/>
+        <mx-navigation-control visualizePitch/>
+        <mx-i-control position="top-left">
+          <span>{{message}}</span>
+          <div>{{  pointerPosition }}</div>
+        </mx-i-control>
+      </MxMap>
+    </section>`,
     data() {
       return {
         message: 'Hello VueMapX!',
         pointerPosition: undefined,
         map: {
           testMode: true,
-          touchPitch: true,
+          attributionControl: false,
           // using `mapStyle` for `style` because it is a reserved word
           mapStyle: 'mapbox://styles/mapbox/streets-v11',
           center: [44.3763, 33.2788],
@@ -52,7 +67,7 @@
         },
         scale: {
           unit: 'nautical',
-          position: 'top-right'
+          position: 'bottom-left'
         },
         popup: {
           offset: 15,
@@ -64,11 +79,108 @@
         tooltip: {
           closeButton: false,
           trackPointer: true
+        },
+        environment: {
+          light: {
+            anchor: 'viewport',
+            color: 'white',
+            intensity: 0.4
+          },
+          terrain: {
+            "source": {
+              'type': 'raster-dem',
+              'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+              'tileSize': 512,
+              'maxzoom': 14
+            },
+            "exaggeration": 2
+          },
+          fog: {
+            "range": [-0.5, 3],
+            "color": "white",
+            "horizon-blend": 0.1
+          }
+        },
+        // https://docs.mapbox.com/mapbox-gl-js/example/gradient-sky/
+        sky: {
+          'id': 'sky',
+          'type': 'sky',
+          'paint': {
+            // set up the sky layer to use a color gradient
+            'sky-type': 'gradient',
+            // the sky will be lightest in the center and get darker moving radially outward
+            // this simulates the look of the sun just below the horizon
+            'sky-gradient': [
+              'interpolate',
+              ['linear'],
+              ['sky-radial-progress'],
+              0.8,
+              'rgba(135, 206, 235, 1.0)',
+              1,
+              'rgba(0,0,0,0.1)'
+            ],
+            'sky-gradient-center': [0, 0],
+            'sky-gradient-radius': 90,
+            'sky-opacity': [
+              'interpolate',
+              ['exponential', 0.1],
+              ['zoom'],
+              5,
+              0,
+              22,
+              1
+            ]
+          }
+        },
+        walk: {
+          'id': 'route',
+          'type': 'line',
+          'source': {
+            'type': 'geojson',
+            'data': {
+              'type': 'Feature',
+              'properties': {},
+              'geometry': {
+                'type': 'LineString',
+                'coordinates': [
+                  [-122.483696, 37.833818],
+                  [-122.483482, 37.833174],
+                  [-122.483396, 37.8327],
+                  [-122.483568, 37.832056],
+                  [-122.48404, 37.831141],
+                  [-122.48404, 37.830497],
+                  [-122.483482, 37.82992],
+                  [-122.483568, 37.829548],
+                  [-122.48507, 37.829446],
+                  [-122.4861, 37.828802],
+                  [-122.486958, 37.82931],
+                  [-122.487001, 37.830802],
+                  [-122.487516, 37.831683],
+                  [-122.488031, 37.832158],
+                  [-122.488889, 37.832971],
+                  [-122.489876, 37.832632],
+                  [-122.490434, 37.832937],
+                  [-122.49125, 37.832429],
+                  [-122.491636, 37.832564],
+                  [-122.492237, 37.833378],
+                  [-122.493782, 37.833683]
+                ]
+              }
+            }
+          },
+          'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          'paint': {
+            'line-color': '#888',
+            'line-width': 8
+          }
         }
       }
     },
     methods: {
-      displayEvent(e) { console.debug(e) }
+      debug: console.debug
     }
   })
 </script>
