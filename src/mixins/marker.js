@@ -1,51 +1,32 @@
 // https://docs.mapbox.com/mapbox-gl-js/api/markers/#marker-parameters
 export default {
   props: {
-
     lngLat: {
       type: [Array, Object],
       required: true,
     },
-    popup: {
-      type: [Object, Boolean],
-      default: false,
-    },
-    element: {
-      type: HTMLElement,
-      default: null,
-    },
+    popup: [Object, Boolean],
+    element: HTMLElement,
     offset: {
       type: [Object, Array],
-      default: null,
     },
     anchor: {
       type: String,
       validator: (val) => ['center', 'top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'].includes(val),
     },
-    color: {
-      type: String,
-      default: null,
-    },
-    scale: {
-      type: Number,
-      default: 1,
-    },
+    color: String,
+    scale: Number,
     draggable: {
       type: Boolean,
-      default: false,
+      default: undefined,
     },
-    rotation: {
-      type: Number,
-      default: 0,
-    },
+    rotation: Number,
     pitchAlignment: {
       type: String,
-      default: 'auto',
       validator: (v) => ['auto', 'viewport', 'map'].includes(v),
     },
     rotationAlignment: {
       type: String,
-      default: 'auto',
       validator: (v) => ['auto', 'viewport', 'map'].includes(v),
     },
   },
@@ -57,8 +38,4 @@ export default {
     rotationAlignment(n) { this.mxObject.setRotationAlignment(n); },
     pitchAlignment(n) { this.mxObject.setPitchAlignment(n); },
   },
-  computed: {
-    events() { return ['dragstart', 'drag', 'dragend']; },
-  },
-
 };

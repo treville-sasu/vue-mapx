@@ -20,9 +20,21 @@ export default {
     this.mxObject = undefined;
   },
   methods: {
-    bindEvents(listeners, events) {
-      Object.keys(listeners, events).forEach((name) => {
-        if (events.includes(name)) this.mxObject.on(name, (e) => this.$emit(name, e));
+    removeUndefined(props) {
+      Object.keys(props).forEach((name) => {
+        if (props[name] === undefined) delete props[name];
+      });
+    },
+    bindEvents(mx, id) {
+      Object.keys(this.$listeners).forEach((name) => {
+        if (id) mx.on(name, id, (e) => this.$emit(name, e));
+        else mx.on(name, (e) => this.$emit(name, e));
+      });
+    },
+    unbindEvents(mx, id) {
+      Object.keys(this.$listeners).forEach((name) => {
+        if (id) mx.off(name, id, (e) => this.$emit(name, e));
+        else mx.off(name, (e) => this.$emit(name, e));
       });
     },
   },

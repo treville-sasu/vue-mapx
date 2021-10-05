@@ -41,6 +41,7 @@ export default {
         container = this.$el,
         ...opts
       } = this.$props;
+      this.removeUndefined(opts);
       return { style, container, ...opts };
     },
   },
@@ -50,12 +51,13 @@ export default {
       this.isLoaded = true;
     });
 
-    this.bindEvents(this.$listeners, this.events);
+    this.bindEvents(this.mxObject);
 
     // intersection for watcher creation (pitch, setPitch, event pitch)
     // const filteredArray = array1.filter((value) => array2.includes(value));
   },
   beforeDestroy() {
+    this.unbindEvents(this.mxObject);
     this.mxObject.remove();
   },
 };

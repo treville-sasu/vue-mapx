@@ -22,12 +22,13 @@ export default {
         lngLat,
         ...opts
       } = this.$props;
+      this.removeUndefined(opts);
       return opts;
     },
   },
   created() {
     this.mxObject = new this.$mapx.Marker(this.curatedOptions).setLngLat(this.lngLat);
-    this.bindEvents(this.$listeners, this.events);
+    this.bindEvents(this.mxObject);
   },
   mounted() {
     this.mxObject

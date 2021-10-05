@@ -8,15 +8,17 @@ export default {
   },
   watch: {
     position(n) {
-      this.map.removeControl(this.mxObject);
-      this.map.addControl(this.mxObject, n);
+      if (this.map && this.mxObject) {
+        this.map.removeControl(this.mxObject);
+        this.map.addControl(this.mxObject, n);
+      }
     },
   },
   mounted() {
-    this.map.addControl(this.mxObject, this.position);
+    if (this.map && this.mxObject) this.map.addControl(this.mxObject, this.position);
   },
   beforeDestroy() {
-    this.map.removeControl(this.mxObject);
+    if (this.map && this.mxObject) this.map.removeControl(this.mxObject);
   },
   destroyed() {
     this.mxObject = undefined;

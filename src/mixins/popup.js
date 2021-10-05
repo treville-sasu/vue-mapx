@@ -5,40 +5,29 @@ export default {
       type: String,
       validator: (val) => ['center', 'top', 'bottom', 'left', 'right', 'top-left', 'top-right', 'bottom-left', 'bottom-right'].includes(val),
     },
-    className: {
-      type: String,
-      default: null,
-    },
+    className: String,
     closeButton: {
       type: Boolean,
-      default: true,
+      default: undefined,
     },
     closeOnClick: {
       type: Boolean,
-      default: true,
+      default: undefined,
     },
     closeOnMove: {
       type: Boolean,
-      default: false,
+      default: undefined,
     },
     focusAfterOpen: {
       type: Boolean,
-      default: true,
+      default: undefined,
     },
-    maxWidth: {
-      type: String,
-      default: '240px',
-    },
-    offset: {
-      type: [Number, Array, Object],
-      default: null,
-    },
-    lngLat: {
-      type: [Array, Object],
-    },
+    maxWidth: String,
+    offset: [Number, Array, Object],
+    lngLat: [Array, Object],
     trackPointer: {
       type: Boolean,
-      default: false,
+      default: undefined,
     },
   },
   watch: {
@@ -47,8 +36,4 @@ export default {
     lngLat(n) { this.mxObject.setLngLat(n); },
     trackPointer(n) { this.mxObject.trackPointer(n); },
   },
-  computed: {
-    events() { return ['open', 'close']; },
-  },
-
 };
