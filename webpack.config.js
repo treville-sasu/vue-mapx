@@ -27,7 +27,7 @@ module.exports = {
     new VueLoaderPlugin(),
   ],
   devServer: {
-    static: ['demo'],
+    static: ['.'],
     compress: true,
     port: 9000,
     open: true,

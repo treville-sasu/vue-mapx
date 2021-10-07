@@ -10,7 +10,7 @@ A really lite Vue plugin to get a Mapbox GL / Maplibre in your App.
  Now we have lighter version with the same awesome Vue integration (and more).
 
 ## Preview & Demo
-a Demo is avaliable as a package script.
+a demo is avaliable as a package script.
 `yarn preview` or `npx preview`
 
 content can be adjusted in `demo/index.html`
@@ -23,38 +23,38 @@ Install via npm:
     yarn add vue-mapbox
 ```
 
-You should have `PouchDB` already present in the scope :
+You should have mapbox or maplibre already present in the scope :
 ```javascript
 import MyMapGl from "mapbox-gl";
 // or
 import MyMapGl from "maplibre-gl";
 ```
 
-Then, plug vue-mapbox into Vue with the reference to the library you want to use (mapbox-gl or maplibre):
+Then, plug vue-mapx into Vue with the reference to the library you want to use :
 ```javascript
 import VueMapX from "vue-mapx";
 
-Vue.use(VueMapX, MyMapGl);
+Vue.use(VueMapX, MyMapGl, apiKey);
 ```
+
+You can set your apiKey once and for all or set it later.
+
+TODO : try and get the apiKey from process.env
 
 ## API
 ### $mapx
 
 * `$mapx` is your reference to the library. You can access it everywhere.
 
-```vue
-<script>
+```js
   export default {
     created: function() {
       new this.$mapx;
     }
   }
-</script>
 ```
 
-### Components
-
-#### the Map `mx-map`
+### the Map component as `mx-map`
 
 ```html
 <section class="mpx-map-wrapper">
@@ -64,57 +64,167 @@ Vue.use(VueMapX, MyMapGl);
   </mx-map>
 </section>
 ```
-Do not forget to wrap your map in a container with 
+* map events are forwarded untouched to the app. TODO : allow for conditional bindings
+* default slot holds map related componnents
+* `#loader` slot is displayed until the map is ready.
+* the component introduces two css classes : `mpx-map-wrapper`, `mpx-map`
+* remember that mapbox & maplibre require you set an absolute height for the parent container.
+* there is an `accessToken` option if you do not want to set it globaly
 
-#### Markers `mx-marker`
+More at : 
+* https://docs.mapbox.com/mapbox-gl-js/api/map
+* https://maplibre.org/maplibre-gl-js-docs/api/map/
+
+### Markers & Popup as `mx-marker` & `mx-popup`
 
 ```html
-<mx-map v-bind="map" 
-...>
-  <mx-marker v-bind="marker" @dragend="displayEvent">
-    <mx-popup v-bind="popup">{{ message }}</mx-popup>
+<mx-map v-bind="map" >
+  ...
+  <mx-popup v-bind="{ offset: 15, lngLat: { lat: 33.22195, lng: 44.31930 } }">{{  message }}</mx-popup>
+
+  <mx-marker v-bind="{ draggable: true, color: 'red', lngLat: { lat: 33.32442, lng: 44.26575 } }">
+    <mx-popup v-bind="{ closeOnMove:true }">{{ message }}</mx-popup>
   </mx-marker>
+  
+  <mx-popup v-bind="{ closeButton: false, trackPointer: true }">This is a toolip</mx-popup>
 ...
 </mx-map>
 ```
-#### Popup `mx-popup`
+
+* Markers can hold a Popup in there default slot.
+* TODO : `#element` slot is redirected to the `element` option, which allow for custom icons.
+* Popups can be on there own, they need a `lngLat` attribute.
+* Popups could be attached to a marker.
+* with `trackPointer:true` the popup will follow the pointer device.
+
+more at :
+* https://docs.mapbox.com/mapbox-gl-js/api/markers/#marker-parameters
+* https://maplibre.org/maplibre-gl-js-docs/api/markers/#marker
+
+### Controls
+
+Every control needs a position on the map canvas, set it with `position` with one of the four corners eg: `top-left`, `bottom-right` ...
+
+#### Attribution Control as `mx-attribution-control`
+See the mapbox/maplibre doc for more details
+* https://docs.mapbox.com/mapbox-gl-js/api/markers/#attributioncontrol
+
+#### Scale Control as `mx-scale-control`
+See the mapbox/maplibre doc for more details
+* https://docs.mapbox.com/mapbox-gl-js/api/markers/#scalecontrol
+
+#### Fullscreen Control as `mx-fullscreen-control`
+See the mapbox/maplibre doc for more details
+* https://docs.mapbox.com/mapbox-gl-js/api/markers/#fullscreencontrol
+
+#### Geolocate Control as `mx-geolocate-control`
+* You can register specific events too
+
+See the mapbox/maplibre doc for more details
+* https://docs.mapbox.com/mapbox-gl-js/api/markers/#geolocatecontrol
+
+#### Navigation Control as `mx-navigation-control`
+See the mapbox/maplibre doc for more details
+
+#### any other Control as `mx-i-control`
 
 ```html
-<mx-map v-bind="map">
-  <mx-marker v-bind="marker">
-    <mx-popup v-bind="popup">{{ message }}</mx-popup>
-    </mx-marker>
-  <mx-popup v-bind="tooltip">{{  pointerPosition }}</mx-popup>
+<mx-map v-bind="map" >
+  ...
+  <mx-i-control :position="top-left">
+    <h4>{{ some title}}</h4>
+    <button>some value</button>
+...
+  </mx-i-control>
+...
 </mx-map>
 ```
-Popups could be attached to a marker or displayed freely on the map by giving coordinates.
-with `trackPointer:true` the popup will follow the pointer device
+* Use the default slot to populate the control with any HTML
+* it receive standart mapbox classes for styling : `mapboxgl-ctrl mapboxgl-ctrl-group`
+* TODO : should set the malibre equivalent classes too.
 
-#### Attribution Control `mx-attribution-control`
-`position` is one of the four corner eg: 'top-left', ...
-See the mapbox/maplibre doc for more details
+### Source & Layer as `mx-source` & `mx-layer`
 
-#### Scale Control `mx-scale-control`
-`position` is one of the four corner eg: 'top-left', ...
-See the mapbox/maplibre doc for more details
+```html
+<mx-map v-bind="map" >
+  ...
+  <mx-layer v-bind="walk" :source="{...options, data:geojson }" @click="walk.paint['line-color'] = randomColor()" />
 
-#### Fullscreen Control `mx-fullscreen-control`
-`position` is one of the four corner eg: 'top-left', ...
-See the mapbox/maplibre doc for more details
+  <mx-layer v-bind="sky"/>
 
-#### Geolocate Control `mx-geolocate-control`
-`position` is one of the four corner eg: 'top-left', ...
-See the mapbox/maplibre doc for more details
-You can lister for events too
+  <mx-source id="flight" :data="geojson" v-bind="options">
+    <mx-layer v-bind="fly.layer" @click="fly.layer.paint['line-color'] = randomColor()" />
+    <mx-layer v-bind="fly.layer" .../>
+  </mx-source>
 
-#### Navigation Control `mx-navigation-control`
-`position` is one of the four corner eg: 'top-left', ...
-See the mapbox/maplibre doc for more details
+  <mx-source id="sourceId" ...>
+  <mx-layer id="SoloLayer" source="sourceID" .../>
+...
+</mx-map>
+```
+* Layers can hold there own source, but is not reactive
+* Layers without a source is allowed eg:sky
+* TODO: Layers have a v-visibility directive for ... visibility
+* Sources hold the data/image/video/tiles ... and is reactive
+* Sources can hold several Layers, allowing for filtering and specific styling
+* You can reference a Source for Layer by `id`, but without reactivity.
 
-#### any other Control `mx-i-control`
-Use the slot to populate the control
+More at :
+* https://docs.mapbox.com/mapbox-gl-js/api/sources/
+* https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/
+* https://docs.mapbox.com/mapbox-gl-js/api/#map#addlayer
+* https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/
 
-### Coordinates notations
+
+### Image
+TODO : addImage, ...
+
+### Feature state
+
+TODO: setFeatureState, removeFeatureState
+
+### Style 
+
+```html
+<section class="mpx-map-wrapper">
+  <mx-map v-bind="map">
+    <mx-style v-bind="style"/>
+...
+  </mx-map>
+</section>
+```
+
+```js
+{
+  style: {
+    light: {
+      anchor: 'viewport',
+      color: 'white',
+      intensity: 0.4
+    },
+    terrain: {
+      "source": {
+        'type': 'raster-dem',
+        'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+        'tileSize': 512,
+        'maxzoom': 14
+      },
+      "exaggeration": 2
+    },
+    fog: {
+      "range": [-0.5, 3],
+      "color": "white",
+      "horizon-blend": 0.1
+    }
+  }
+}
+```
+
+* Allow to set Light, Terrain & Fog
+* If you need a sky set it as a layer.
+* TODO : allow to change style dynamicaly
+
+## Coordinates notations
 
 If you come from other web map librairies you know that there no convention for coordinates notations. Mapbox use the `lngLat` parameter so do we. this could be an `Array<Number, Number>` or an `Object<{lat, lng}>`
 

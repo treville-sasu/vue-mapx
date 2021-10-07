@@ -3,23 +3,18 @@
 <head>
   <script src='https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js'></script>
   <link href='https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css' rel='stylesheet' />
-  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+  <!-- <script src="https://unpkg.com/maplibre-gl@next/dist/maplibre-gl.js"></script>
+  <link href="https://unpkg.com/maplibre-gl@next/dist/maplibre-gl.css" rel="stylesheet" /> -->
+
+  <script src="https://unpkg.com/vue@2"></script>
+  <!-- <script src="https://unpkg.com/vue@next"></script> -->
+
   <script src="./dist/main.js"></script>
 
   <title>Vue-MapX Demo page</title>
   <link rel="shortcut icon" href="#">
-  <style type="text/css">
-    .wrapper {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-gap: 10px;
-    }
 
-    textarea {
-      width: 100%;
-      min-height: 30em;
-    }
-  </style>
 </head>
 
 <body>
@@ -28,6 +23,7 @@
 
 <script type="text/javascript">
   Vue.use(VueMapX.default, mapboxgl, 'pk.eyJ1IjoibWFicmVuYWMiLCJhIjoiY2sxbm1ueWhjMDd6aTNvcWZhNWVzejEyZiJ9.y6D5gNxGbMDJnzd0CSW9xQ');
+
 
   const app = new Vue({
     el: '#app',
