@@ -1,9 +1,3 @@
-<template>
-  <div>
-    <slot />
-  </div>
-</template>
-
 <script>
 import baseMixin from '../mixins/mx';
 import markerMixin from '../mixins/marker';
@@ -36,6 +30,9 @@ export default {
   },
   beforeDestroy() {
     this.mxObject.remove();
+  },
+  render() {
+    return this.$slots.default;
   },
 };
 </script>

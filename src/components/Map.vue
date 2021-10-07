@@ -52,9 +52,6 @@ export default {
     });
 
     this.bindEvents(this.mxObject);
-
-    // intersection for watcher creation (pitch, setPitch, event pitch)
-    // const filteredArray = array1.filter((value) => array2.includes(value));
   },
   beforeDestroy() {
     this.unbindEvents(this.mxObject);

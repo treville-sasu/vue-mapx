@@ -1,10 +1,10 @@
 export default {
   inject: {
     mxMap: {
-      default: 'undefined',
+      default: undefined,
     },
     mxParent: {
-      default: 'undefined',
+      default: undefined,
     },
   },
   data() { return { mxObject: undefined }; },
@@ -22,18 +22,19 @@ export default {
   methods: {
     removeUndefined(props) {
       Object.keys(props).forEach((name) => {
+        // eslint-disable-next-line no-param-reassign
         if (props[name] === undefined) delete props[name];
       });
     },
-    bindEvents(mx, id) {
+    bindEvents(mx, layerId) {
       Object.keys(this.$listeners).forEach((name) => {
-        if (id) mx.on(name, id, (e) => this.$emit(name, e));
+        if (layerId) mx.on(name, layerId, (e) => this.$emit(name, e));
         else mx.on(name, (e) => this.$emit(name, e));
       });
     },
-    unbindEvents(mx, id) {
+    unbindEvents(mx, layerId) {
       Object.keys(this.$listeners).forEach((name) => {
-        if (id) mx.off(name, id, (e) => this.$emit(name, e));
+        if (layerId) mx.off(name, layerId, (e) => this.$emit(name, e));
         else mx.off(name, (e) => this.$emit(name, e));
       });
     },

@@ -134,16 +134,5 @@ export default {
     zoom(v) { this.mxObject.setZoom(v); },
     bearing(v) { this.mxObject.setBearing(v); },
     pitch(v) { this.mxObject.setPitch(v); },
-
-    // Layer Oriented
-    // setLayerZoomRange
-    // setFilter
-    // setPaintProperty
-    // setLayoutProperty
-
-    // Environnement oriented
-    // light(v) { this.mxObject.setLight(v); },
-    // terrain(v) { this.mxObject.setTerrain(v); },
-    // fog(v) { this.mxObject.setFog(v); },
   },
 };

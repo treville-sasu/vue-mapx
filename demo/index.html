@@ -8,6 +8,18 @@
 
   <title>Vue-MapX Demo page</title>
   <link rel="shortcut icon" href="#">
+  <style type="text/css">
+    .wrapper {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 30em;
+    }
+  </style>
 </head>
 
 <body>
@@ -20,31 +32,35 @@
   const app = new Vue({
     el: '#app',
     template: `<section class="mpx-map-wrapper">
-      <MxMap v-bind="map" 
+      <mx-map v-bind="map"
       @load="debug" 
       @dragend="debug" 
-      @mousemove="pointerPosition = $event.lngLat"
+      @contextmenu="addWaypoint"
+      @mousemove="pointerPosition = getElevation($event)"
       >
-      <mx-attribution-control :customAttribution="message"/>
-      <mx-popup v-bind="tooltip">{{  pointerPosition }}</mx-popup>
-      <mx-marker v-bind="marker" @dragend="debug">
-        <mx-popup v-bind="popup">{{ message }}</mx-popup>
+        <template #loader>{{ message }}</template>
+        <mx-source id="flight" :data="fly.data" v-bind="fly.source">
+        <mx-layer v-bind="fly.layer" @click="fly.layer.paint['line-color'] = randomColor()" />
+        </mx-source>
+        <mx-i-control position="top-left">
+          <span>{{message}}</span>
+          <div>{{  pointerPosition }} m</div>
+        </mx-i-control>
+        <mx-navigation-control visualizePitch/>
+        <mx-style v-bind="style"/>
+        <mx-marker v-bind="marker" @dragend="debug">
+          <mx-popup v-bind="popup">{{ message }}</mx-popup>
         </mx-marker>
-      <mx-popup v-bind="popup">{{ message }}</mx-popup>
-      <template #loader>{{ message }}</template>
-       <MxEnvironment v-bind="environment"/>
-       <MxLayer v-bind="sky"/>
-       <MxLayer v-bind="walk"/>
+        <mx-layer v-bind="walk" @click="walk.paint['line-color'] = randomColor()" />
+        <mx-popup v-bind="popup">{{ message }}</mx-popup>
+        <mx-popup v-bind="tooltip">{{  pointerPosition }}</mx-popup>
+        <mx-attribution-control :customAttribution="message"/>
         <mx-scale-control v-bind="scale" />
         <mx-fullscreen-control/>
         <mx-geolocate-control/>
-        <mx-navigation-control visualizePitch/>
-        <mx-i-control position="top-left">
-          <span>{{message}}</span>
-          <div>{{  pointerPosition }}</div>
-        </mx-i-control>
-      </MxMap>
-    </section>`,
+        <mx-layer v-bind="sky"/>
+      </mx-map>
+          </section>`,
     data() {
       return {
         message: 'Hello VueMapX!',
@@ -80,7 +96,7 @@
           closeButton: false,
           trackPointer: true
         },
-        environment: {
+        style: {
           light: {
             anchor: 'viewport',
             color: 'white',
@@ -101,35 +117,25 @@
             "horizon-blend": 0.1
           }
         },
-        // https://docs.mapbox.com/mapbox-gl-js/example/gradient-sky/
+        // https://docs.mapbox.com/mapbox-gl-js/example/atmospheric-sky/
         sky: {
           'id': 'sky',
           'type': 'sky',
           'paint': {
-            // set up the sky layer to use a color gradient
-            'sky-type': 'gradient',
-            // the sky will be lightest in the center and get darker moving radially outward
-            // this simulates the look of the sun just below the horizon
-            'sky-gradient': [
-              'interpolate',
-              ['linear'],
-              ['sky-radial-progress'],
-              0.8,
-              'rgba(135, 206, 235, 1.0)',
-              1,
-              'rgba(0,0,0,0.1)'
-            ],
-            'sky-gradient-center': [0, 0],
-            'sky-gradient-radius': 90,
             'sky-opacity': [
               'interpolate',
-              ['exponential', 0.1],
+              ['linear'],
               ['zoom'],
-              5,
               0,
-              22,
+              0,
+              5,
+              0.3,
+              8,
               1
-            ]
+            ],
+            'sky-type': 'atmosphere',
+            'sky-atmosphere-sun': [180, 30],
+            'sky-atmosphere-sun-intensity': 5
           }
         },
         walk: {
@@ -143,28 +149,16 @@
               'geometry': {
                 'type': 'LineString',
                 'coordinates': [
-                  [-122.483696, 37.833818],
-                  [-122.483482, 37.833174],
-                  [-122.483396, 37.8327],
-                  [-122.483568, 37.832056],
-                  [-122.48404, 37.831141],
-                  [-122.48404, 37.830497],
-                  [-122.483482, 37.82992],
-                  [-122.483568, 37.829548],
-                  [-122.48507, 37.829446],
-                  [-122.4861, 37.828802],
-                  [-122.486958, 37.82931],
-                  [-122.487001, 37.830802],
-                  [-122.487516, 37.831683],
-                  [-122.488031, 37.832158],
-                  [-122.488889, 37.832971],
-                  [-122.489876, 37.832632],
-                  [-122.490434, 37.832937],
-                  [-122.49125, 37.832429],
-                  [-122.491636, 37.832564],
-                  [-122.492237, 37.833378],
-                  [-122.493782, 37.833683]
+                  [44.229248858442986, 33.26456452284866],
+                  [44.22770987878036, 33.26401424951273],
+                  [44.22776505458151, 33.261304205440425],
+                  [44.225182961928056, 33.26033952527986],
+                  [44.21914334503879, 33.26892721824875],
+                  [44.218264306162666, 33.26920290224669],
+                  [44.21672643349413, 33.2684222988276],
+                  [44.228808301666334, 33.25133462122925]
                 ]
+
               }
             }
           },
@@ -176,11 +170,48 @@
             'line-color': '#888',
             'line-width': 8
           }
+        },
+        fly: {
+          data: {
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+              'type': 'LineString',
+              'coordinates': [
+                [44.229248858442986, 33.26456452284866],
+                [44.22770987878036, 33.26401424951273],
+              ]
+            }
+          },
+          source: {
+            'type': 'geojson',
+          },
+          layer: {
+            'id': 'route',
+            'type': 'line',
+            'layout': {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
+            'paint': {
+              'line-color': '#888',
+              'line-width': 8
+            }
+          }
         }
       }
     },
     methods: {
-      debug: console.debug
+      debug: console.debug,
+      randomColor() {
+        return `hsl(${(360 * Math.random())},50%,50%)`
+      },
+      getElevation({ target, lngLat }) {
+        return Math.round(target.queryTerrainElevation(lngLat));
+      },
+      addWaypoint({ lngLat }) {
+        this.fly.data.geometry.coordinates.push([lngLat.lng, lngLat.lat]);
+      }
     }
   })
 </script>

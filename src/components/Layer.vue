@@ -57,8 +57,8 @@ export default {
   computed: {
     curatedOptions() {
       const { beforeId, ...opts } = this.$props;
-      this.removeUndefined(opts);
       opts.source ||= this.parent;
+      this.removeUndefined(opts);
       return opts;
     },
     mxLayer() {
