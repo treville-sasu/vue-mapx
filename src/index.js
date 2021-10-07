@@ -8,6 +8,7 @@ import GeolocateControl from './components/GeolocateControl.vue';
 import NavigationControl from './components/NavigationControl.vue';
 import IControl from './components/IControl.vue';
 import Popup from './components/Popup.vue';
+import Style from './components/Style.vue';
 
 export default {
   install: (app, constructor, apiKey) => {
@@ -20,6 +21,7 @@ export default {
     app.component('MxNavigationControl', NavigationControl);
     app.component('MxIControl', IControl);
     app.component('MxPopup', Popup);
+    app.component('MxStyle', Style);
 
     app.prototype.$mapx = constructor;
     app.prototype.$mapx.accessToken = apiKey;
