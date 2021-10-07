@@ -1,0 +1,97 @@
+<script>
+// https://docs.mapbox.com/mapbox-gl-js/api/#map#addlayer
+// https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/
+import baseMixin from '../mixins/mx';
+
+export default {
+  name: 'Layer',
+  mixins: [baseMixin],
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+      validator: (v) => ['fill', 'line', 'symbol', 'circle', 'heatmap', 'fill-extrusion', 'raster', 'hillshade', 'background', 'sky'].includes(v),
+    },
+    source: [String, Object],
+    filter: Array,
+    layout: Object,
+    maxzoom: Number,
+    metadata: Object,
+    minzoom: Number,
+    paint: Object,
+    sourceLayer: String,
+    renderingMode: String,
+    beforeId: String,
+  },
+  watch: {
+    minzoom(n) { this.map.setLayerZoomRange(this.id, n, this.maxzoom); },
+    maxzoom(n) { this.map.setLayerZoomRange(this.id, this.minzoom, n); },
+    // for setFilter/setPaintProperty/setLayoutProperty options is omitted
+    // and default to {validate:true} in mapbox 2.5
+    filter(n) { this.map.setFilter(this.id, n); },
+    paint: {
+      deep: true,
+      // as new and old value are the same (reference to the same object)
+      // we have to set each property again.
+      handler(n) {
+        Object.entries(n)
+          .forEach(([name, value]) => this.map.setPaintProperty(this.id, name, value));
+      },
+    },
+    layout: {
+      deep: true,
+      // as new and old value are the same (reference to the same object)
+      // we have to set each property again.
+      handler(n, o) {
+        Object.entries(this.diff(o, n))
+          .forEach(([name, value]) => this.map.setLayoutProperty(this.id, name, value));
+      },
+    },
+
+    beforeId(n) { this.map.moveLayer(this.id, n); },
+  },
+  computed: {
+    curatedOptions() {
+      const { beforeId, ...opts } = this.$props;
+      this.removeUndefined(opts);
+      opts.source ||= this.parent;
+      return opts;
+    },
+    mxLayer() {
+      return this.map.getLayer(this.id);
+    },
+  },
+  methods: {
+    diff(a, b) {
+      const r = {};
+      const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+
+      keys.forEach((k) => {
+        if (a[k] !== b[k] && (a[k] !== undefined || b[k] !== undefined)) r[k] = b[k];
+      });
+      return r;
+    },
+  },
+  mounted() {
+    if (this.mxLayer) this.map.removeLayer(this.id);
+    if (this.map.getSource(this.id)) this.map.removeSource(this.id);
+
+    this.map.addLayer(this.curatedOptions, this.beforeId);
+    this.bindEvents(this.map, this.id);
+  },
+  destroyed() {
+    if (this.mxLayer) {
+      this.map.removeLayer(this.id);
+      this.unbindEvents(this.map, this.id);
+    }
+    if (this.map.getSource(this.id)) this.map.removeSource(this.id);
+  },
+  render() {
+    return undefined;
+  },
+};
+</script>
