@@ -15,7 +15,7 @@ a demo is avaliable as a package script.
 
 content can be adjusted in `demo/index.html`
 
-you can access the demo from the package built here : [Demo](./demo/index.html)
+dont forget to check the [Preview](./index.html) and the sources too.
 
 ## Installation
 Install via npm:
