@@ -3,7 +3,7 @@ import baseMixin from '../mixins/mx';
 import markerMixin from '../mixins/marker';
 
 export default {
-  name: 'Marker',
+  name: 'MxMarker',
   mixins: [baseMixin, markerMixin],
   provide() {
     return {

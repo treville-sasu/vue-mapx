@@ -4,7 +4,7 @@ import baseMixin from '../mixins/mx';
 import controlMixin from '../mixins/control';
 
 export default {
-  name: 'NavigationControl',
+  name: 'MxNavigationControl',
   mixins: [baseMixin, controlMixin],
   props: {
     fitBoundsOptions: Object,

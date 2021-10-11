@@ -3,7 +3,7 @@
 import baseMixin from '../mixins/mx';
 
 export default {
-  name: 'Environment',
+  name: 'MxEnvironment',
   mixins: [baseMixin],
   props: {
     light: Object,

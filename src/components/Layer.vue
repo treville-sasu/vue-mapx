@@ -4,7 +4,7 @@
 import baseMixin from '../mixins/mx';
 
 export default {
-  name: 'Layer',
+  name: 'MxLayer',
   mixins: [baseMixin],
   props: {
     id: {
@@ -78,21 +78,24 @@ export default {
     },
   },
   mounted() {
-    if (this.mxLayer) this.map.removeLayer(this.id);
-    if (this.map.getSource(this.id)) this.map.removeSource(this.id);
-
     this.map.addLayer(this.curatedOptions, this.beforeId);
+    // this.mxObject = this.map.getLayer(this.id);
     this.bindEvents(this.map, this.id);
   },
   destroyed() {
-    if (this.mxLayer) {
+    if (this.map.getLayer(this.id)) {
       this.map.removeLayer(this.id);
       this.unbindEvents(this.map, this.id);
     }
-    if (this.map.getSource(this.id)) this.map.removeSource(this.id);
+    // this.mxObject = undefined;
   },
   render() {
     return undefined;
+  },
+  directives: {
+    visible(_, { value }) {
+      this.map.setLayoutProperty(this.id, 'visibility', value ? 'visible' : 'none');
+    },
   },
 };
 </script>

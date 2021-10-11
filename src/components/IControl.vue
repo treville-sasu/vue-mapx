@@ -18,7 +18,7 @@ class SlotControl {
 }
 
 export default {
-  name: 'IControl',
+  name: 'MxIControl',
   mixins: [baseMixin, controlMixin],
   mounted() {
     this.mxObject = new SlotControl(this.$el);

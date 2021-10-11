@@ -4,7 +4,7 @@ import baseMixin from '../mixins/mx';
 import controlMixin from '../mixins/control';
 
 export default {
-  name: 'FullscreenControl',
+  name: 'MxFullscreenControl',
   mixins: [baseMixin, controlMixin],
   props: {
     container: HTMLElement,

@@ -1,33 +1,35 @@
 /* eslint-disable no-param-reassign */
-import Map from './components/Map.vue';
-import Marker from './components/Marker.vue';
-import ScaleControl from './components/ScaleControl.vue';
-import AttributionControl from './components/AttributionControl.vue';
-import FullscreenControl from './components/FullscreenControl.vue';
-import GeolocateControl from './components/GeolocateControl.vue';
-import NavigationControl from './components/NavigationControl.vue';
-import IControl from './components/IControl.vue';
-import Popup from './components/Popup.vue';
-import Style from './components/Style.vue';
-import Source from './components/Source.vue';
-import Layer from './components/Layer.vue';
+import MxMap from './components/Map.vue';
+import MxMarker from './components/Marker.vue';
+import MxScaleControl from './components/ScaleControl.vue';
+import MxAttributionControl from './components/AttributionControl.vue';
+import MxFullscreenControl from './components/FullscreenControl.vue';
+import MxGeolocateControl from './components/GeolocateControl.vue';
+import MxNavigationControl from './components/NavigationControl.vue';
+import MxIControl from './components/IControl.vue';
+import MxPopup from './components/Popup.vue';
+import MxStyle from './components/Style.vue';
+import MxSource from './components/Source.vue';
+import MxLayer from './components/Layer.vue';
 
 export default {
   install: (app, constructor, apiKey) => {
-    app.component('MxMap', Map);
-    app.component('MxMarker', Marker);
-    app.component('MxScaleControl', ScaleControl);
-    app.component('MxAttributionControl', AttributionControl);
-    app.component('MxFullscreenControl', FullscreenControl);
-    app.component('MxGeolocateControl', GeolocateControl);
-    app.component('MxNavigationControl', NavigationControl);
-    app.component('MxIControl', IControl);
-    app.component('MxPopup', Popup);
-    app.component('MxStyle', Style);
-    app.component('MxSource', Source);
-    app.component('MxLayer', Layer);
+    app.component('MxMap', MxMap);
+    app.component('MxMarker', MxMarker);
+    app.component('MxScaleControl', MxScaleControl);
+    app.component('MxAttributionControl', MxAttributionControl);
+    app.component('MxFullscreenControl', MxFullscreenControl);
+    app.component('MxGeolocateControl', MxGeolocateControl);
+    app.component('MxNavigationControl', MxNavigationControl);
+    app.component('MxIControl', MxIControl);
+    app.component('MxPopup', MxPopup);
+    app.component('MxStyle', MxStyle);
+    app.component('MxSource', MxSource);
+    app.component('MxLayer', MxLayer);
 
     app.prototype.$mapx = constructor;
-    app.prototype.$mapx.accessToken = apiKey;
+
+    if (typeof process !== 'undefined' && process.env && process.env.VUE_APP_MAPBOX_TOKEN) app.prototype.$mapx.accessToken = process.env.VUE_APP_MAPBOX_TOKEN;
+    if (apiKey) app.prototype.$mapx.accessToken = apiKey;
   },
 };

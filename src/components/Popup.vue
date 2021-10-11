@@ -3,7 +3,7 @@ import baseMixin from '../mixins/mx';
 import popupMixin from '../mixins/popup';
 
 export default {
-  name: 'Popup',
+  name: 'MxPopup',
   mixins: [baseMixin, popupMixin],
   computed: {
     curatedOptions() {

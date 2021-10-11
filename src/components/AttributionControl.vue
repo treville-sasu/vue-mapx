@@ -4,7 +4,7 @@ import baseMixin from '../mixins/mx';
 import controlMixin from '../mixins/control';
 
 export default {
-  name: 'AttributionControl',
+  name: 'MxAttributionControl',
   mixins: [baseMixin, controlMixin],
   props: {
     compact: {

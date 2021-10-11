@@ -16,9 +16,6 @@ export default {
       return typeof this.mxParent === 'function' ? this.mxParent() : undefined;
     },
   },
-  destroyed() {
-    this.mxObject = undefined;
-  },
   methods: {
     removeUndefined(props) {
       Object.keys(props).forEach((name) => {

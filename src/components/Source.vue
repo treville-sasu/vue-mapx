@@ -5,7 +5,7 @@
 import baseMixin from '../mixins/mx';
 
 export default {
-  name: 'Source',
+  name: 'MxSource',
   mixins: [baseMixin],
   props: {
     type: {
@@ -13,7 +13,7 @@ export default {
       required: true,
       validator: (v) => ['vector', 'raster', 'raster-dem', 'geojson', 'image', 'video', 'canvas'].includes(v),
     },
-    id: { type: String, requiered: true },
+    id: { type: String, required: true },
 
     // VectorTile options (and Raster & Raster-dem)
     // setTiles / setUrl
@@ -77,13 +77,12 @@ export default {
     },
   },
   created() {
-    if (this.map.getSource(this.id)) this.map.removeSource(this.id);
     this.map.addSource(this.id, this.curatedOptions);
     this.mxObject = this.map.getSource(this.id);
-    this.$emit('load', this.id, this.mxObject);
   },
-  beforeDestroy() {
+  destroyed() {
     if (this.map.getSource(this.id)) this.map.removeSource(this.id);
+    this.mxObject = undefined;
   },
   render() {
     return this.$slots.default;

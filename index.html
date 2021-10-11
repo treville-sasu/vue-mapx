@@ -27,12 +27,14 @@
 
   const app = new Vue({
     el: '#app',
-    template: `<section class="mpx-map-wrapper">
+    template: `<div>
+      <button @click=" mapOn = !mapOn">{{mapOn ? 'hide': 'display'}} map</button>
       <mx-map v-bind="map"
       @load="debug" 
       @dragend="debug" 
       @contextmenu="addWaypoint"
       @mousemove="pointerPosition = getElevation($event)"
+      v-if="mapOn"
       >
         <template #loader>{{ message }}</template>
         <mx-source id="flight" :data="fly.data" v-bind="fly.source">
@@ -56,9 +58,10 @@
         <mx-geolocate-control/>
         <mx-layer v-bind="sky"/>
       </mx-map>
-          </section>`,
+        </section></div>`,
     data() {
       return {
+        mapOn: true,
         message: 'Hello VueMapX!',
         pointerPosition: undefined,
         map: {
@@ -176,6 +179,8 @@
               'coordinates': [
                 [44.229248858442986, 33.26456452284866],
                 [44.22770987878036, 33.26401424951273],
+                [44.225182961928056, 33.26033952527986],
+                [44.21914334503879, 33.26892721824875],
               ]
             }
           },
@@ -183,7 +188,7 @@
             'type': 'geojson',
           },
           layer: {
-            'id': 'route',
+            'id': 'flight',
             'type': 'line',
             'layout': {
               'line-join': 'round',

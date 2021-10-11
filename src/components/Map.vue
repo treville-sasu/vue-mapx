@@ -21,7 +21,7 @@ import baseMixin from '../mixins/mx';
 import mapMixin from '../mixins/map';
 
 export default {
-  name: 'Map',
+  name: 'MxMap',
   mixins: [baseMixin, mapMixin],
   provide() {
     return {
@@ -53,9 +53,10 @@ export default {
 
     this.bindEvents(this.mxObject);
   },
-  beforeDestroy() {
+  destroyed() {
     this.unbindEvents(this.mxObject);
     this.mxObject.remove();
+    this.mxObject = undefined;
   },
 };
 </script>
