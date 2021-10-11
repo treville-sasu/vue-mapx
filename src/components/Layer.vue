@@ -57,7 +57,8 @@ export default {
   computed: {
     curatedOptions() {
       const { beforeId, ...opts } = this.$props;
-      opts.source ||= this.parent;
+      // eslint-disable-next-line no-unused-expressions
+      opts.source || (opts.source = this.parent); //      opts.source ||= this.parent;
       this.removeUndefined(opts);
       return opts;
     },
