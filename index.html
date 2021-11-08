@@ -14,7 +14,6 @@
 
   <title>Vue-MapX Demo page</title>
   <link rel="shortcut icon" href="#">
-
 </head>
 
 <body>
@@ -24,60 +23,77 @@
 <script type="text/javascript">
   Vue.use(VueMapX.default, mapboxgl, 'pk.eyJ1IjoibWFicmVuYWMiLCJhIjoiY2sxbm1ueWhjMDd6aTNvcWZhNWVzejEyZiJ9.y6D5gNxGbMDJnzd0CSW9xQ');
 
-
   const app = new Vue({
     el: '#app',
     template: `<div>
       <button @click=" mapOn = !mapOn">{{mapOn ? 'hide': 'display'}} map</button>
-      <mx-map v-bind="map"
-      @load="debug" 
-      @dragend="debug" 
+      <button @click=" sourceOn = !sourceOn">{{sourceOn ? 'hide': 'display'}} source</button>
+      <section class="mpx-map-wrapper">
+        <mx-map v-bind="map"
+        @load="debug" 
+        @mousemove="pointerPosition = getElevation($event)"
+        @dragend="debug"
       @contextmenu="addWaypoint"
-      @mousemove="pointerPosition = getElevation($event)"
       v-if="mapOn"
       >
         <template #loader>{{ message }}</template>
-        <mx-source id="flight" :data="fly.data" v-bind="fly.source">
-        <mx-layer v-bind="fly.layer" @click="fly.layer.paint['line-color'] = randomColor()" />
+
+        <mx-source id="flight" :data="geoJSON" type="geojson" v-if="sourceOn">
+          <mx-layer v-bind="line" id="route" @click="line.paint['line-color'] = randomColor()"/>
+          <mx-layer v-bind="lineText" id="route-label"/>
+          <mx-layer v-bind="symbol" id="point"/>
+          <mx-layer v-bind="polygon" id="area"/>
         </mx-source>
+        
+        <mx-layer v-bind="sky"/>
+        
         <mx-i-control position="top-left">
           <span>{{message}}</span>
           <div>{{  pointerPosition }} m</div>
         </mx-i-control>
+        
         <mx-navigation-control visualizePitch/>
+        
         <mx-style v-bind="style"/>
-        <mx-marker v-bind="marker" @dragend="debug">
+        
+        <mx-marker v-bind="marker" @update:lngLat="marker.lngLat = $event" @dragend="debug">
           <mx-popup v-bind="popup">{{ message }}</mx-popup>
         </mx-marker>
-        <mx-layer v-bind="walk" @click="walk.paint['line-color'] = randomColor()" />
+        
         <mx-popup v-bind="popup">{{ message }}</mx-popup>
         <mx-popup v-bind="tooltip">{{  pointerPosition }}</mx-popup>
+        
         <mx-attribution-control :customAttribution="message"/>
         <mx-scale-control v-bind="scale" />
         <mx-fullscreen-control/>
         <mx-geolocate-control/>
-        <mx-layer v-bind="sky"/>
       </mx-map>
-        </section></div>`,
+    </section>
+  </div>`,
     data() {
       return {
         mapOn: true,
+        sourceOn: true,
+        layerOn: true,
         message: 'Hello VueMapX!',
         pointerPosition: undefined,
         map: {
           testMode: true,
           attributionControl: false,
-          // using `mapStyle` for `style` because it is a reserved word
+          // using `mapStyle` for `style` because it is a reserved word. others properties names are preserved
           mapStyle: 'mapbox://styles/mapbox/streets-v11',
-          center: [44.3763, 33.2788],
-          zoom: 11
+          center: [
+            9.206542,
+            41.34382
+          ],
+          zoom: 5
         },
         marker: {
           draggable: true,
           color: 'red',
           lngLat: {
-            lat: 33.32442445164719,
-            lng: 44.26575004569881
+            lat: 40.7184,
+            lng: 5.38447
           }
         },
         scale: {
@@ -87,8 +103,8 @@
         popup: {
           offset: 15,
           lngLat: {
-            lat: 33.22195126761062,
-            lng: 44.31930842285104
+            lat: 40.758444,
+            lng: 5.3844747
           }
         },
         tooltip: {
@@ -137,30 +153,111 @@
             'sky-atmosphere-sun-intensity': 5
           }
         },
-        walk: {
-          'id': 'route',
-          'type': 'line',
-          'source': {
-            'type': 'geojson',
-            'data': {
-              'type': 'Feature',
-              'properties': {},
-              'geometry': {
-                'type': 'LineString',
-                'coordinates': [
-                  [44.229248858442986, 33.26456452284866],
-                  [44.22770987878036, 33.26401424951273],
-                  [44.22776505458151, 33.261304205440425],
-                  [44.225182961928056, 33.26033952527986],
-                  [44.21914334503879, 33.26892721824875],
-                  [44.218264306162666, 33.26920290224669],
-                  [44.21672643349413, 33.2684222988276],
-                  [44.228808301666334, 33.25133462122925]
+        geoJSON: {
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "properties": { name: "the is the route" },
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                  [
+                    5.2734375,
+                    43.35713822211053
+                  ],
+                  [
+                    -0.3076171875,
+                    39.470125122358176
+                  ],
+                  [
+                    3.0322265625,
+                    36.80928470205937
+                  ],
+                  [
+                    13.447265624999998,
+                    38.272688535980976
+                  ]
                 ]
-
+              }
+            },
+            {
+              "type": "Feature",
+              "properties": { name: 'Alpha' },
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  8.701171874999998,
+                  42.06560675405716
+                ]
+              }
+            },
+            {
+              "type": "Feature",
+              "properties": { name: 'Papa' },
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  2.63671875,
+                  39.639537564366684
+                ]
+              }
+            },
+            {
+              "type": "Feature",
+              "properties": { name: 'Romeo' },
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  12.480468749999998,
+                  41.86956082699455
+                ]
+              }
+            },
+            {
+              "type": "Feature",
+              "properties": {},
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [
+                      9.20654296875,
+                      41.343824581185686
+                    ],
+                    [
+                      7.9541015625,
+                      40.93011520598305
+                    ],
+                    [
+                      8.26171875,
+                      38.976492485539396
+                    ],
+                    [
+                      8.72314453125,
+                      38.75408327579141
+                    ],
+                    [
+                      9.55810546875,
+                      39.13006024213511
+                    ],
+                    [
+                      9.909667968749998,
+                      40.58058466412761
+                    ],
+                    [
+                      9.20654296875,
+                      41.343824581185686
+                    ]
+                  ]
+                ]
               }
             }
-          },
+          ]
+        },
+        line: {
+          'type': 'line',
+          filter: ['==', ['geometry-type'], "LineString"],
           'layout': {
             'line-join': 'round',
             'line-cap': 'round'
@@ -170,34 +267,33 @@
             'line-width': 8
           }
         },
-        fly: {
-          data: {
-            'type': 'Feature',
-            'properties': {},
-            'geometry': {
-              'type': 'LineString',
-              'coordinates': [
-                [44.229248858442986, 33.26456452284866],
-                [44.22770987878036, 33.26401424951273],
-                [44.225182961928056, 33.26033952527986],
-                [44.21914334503879, 33.26892721824875],
-              ]
-            }
+        lineText: {
+          'type': 'symbol',
+          filter: ['==', ['geometry-type'], "LineString"],
+          "layout": {
+            "symbol-placement": "line",
+            'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+            'text-field': ['get', 'name'],
+            "text-size": 32
           },
-          source: {
-            'type': 'geojson',
-          },
-          layer: {
-            'id': 'flight',
-            'type': 'line',
-            'layout': {
-              'line-join': 'round',
-              'line-cap': 'round'
-            },
-            'paint': {
-              'line-color': '#888',
-              'line-width': 8
-            }
+        },
+        symbol: {
+          'type': 'symbol',
+          filter: ["==", ["geometry-type"], "Point"],
+          'layout': {
+            'icon-image': 'tw-provincial-expy-3',
+            'text-field': ['get', 'name'],
+            'text-offset': [0, 1.25],
+            'text-anchor': 'top'
+          }
+        },
+        polygon: {
+          'type': 'fill',
+          filter: ['==', ['geometry-type'], "Polygon"],
+          'layout': {},
+          'paint': {
+            'fill-color': '#0080ff',
+            'fill-opacity': 0.5
           }
         }
       }
@@ -211,7 +307,7 @@
         return Math.round(target.queryTerrainElevation(lngLat));
       },
       addWaypoint({ lngLat }) {
-        this.fly.data.geometry.coordinates.push([lngLat.lng, lngLat.lat]);
+        this.geoJSON.features[0].geometry.coordinates.push([lngLat.lng, lngLat.lat]);
       }
     }
   })

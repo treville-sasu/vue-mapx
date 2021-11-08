@@ -12,9 +12,8 @@ class SlotControl {
     return this.el;
   }
 
-  onRemove() {
-    this.el.parentNode.removeChild(this.el);
-  }
+  // eslint-disable-next-line class-methods-use-this
+  onRemove() {}
 }
 
 export default {

@@ -33,6 +33,28 @@ export default {
       default: undefined,
     },
 
+    tileSize: Number,
+
+    buffer: Number,
+    cluster: {
+      type: Boolean,
+      default: undefined,
+    },
+    clusterMaxZoom: Number,
+    clusterMinPoints: Number,
+    clusterProperties: Object,
+    clusterRadius: Number,
+    filter: Array, // object?
+    generateId: {
+      type: Boolean,
+      default: undefined,
+    },
+    lineMetrics: {
+      type: Boolean,
+      default: undefined,
+    },
+    tolerance: Number,
+
     // Geojson options
     data: [Object, String],
 
@@ -84,8 +106,10 @@ export default {
     if (this.map.getSource(this.id)) this.map.removeSource(this.id);
     this.mxObject = undefined;
   },
-  render() {
-    return this.$slots.default;
+
+  // Needed for Vue 2 "[Vue warn]: Multiple root nodes " issue
+  render(h) {
+    return h('div', this.$slots.default);
   },
 };
 </script>
